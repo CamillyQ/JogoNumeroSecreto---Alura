@@ -1,22 +1,63 @@
-// let numeroSecreto = parseInt(Math.random() * 11)
-// let tentativas = 1
-// let chute
+let listaSorteados = [];
+let titulo = document.querySelector('h1');
+let paragrafo = document.querySelector('p');
+exibirNaTela();
 
-// alert('Boas vindas ao jogo do número secreto')
+let numero = RandomNumber();
+let tentativas = 1;
 
-// while (chute != numeroSecreto) {
-//     let chute = prompt('Escolha um número entre 1 e 10')
-//     if (chute == numeroSecreto) {
-//         break
-//     } else {
-//         if (chute > numeroSecreto) {
-//             alert('O número secreto é menor')
-//         } else {
-//             alert('O número secreto é maior')
-//         }
-//     }
-//     tentativas++
-// }
 
-// let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa' 
-// alert(`O número secreto era ${numeroSecreto} e você acertou com apenas ${tentativas} ${palavraTentativa}`)
+function exibirNaTela(){
+    titulo.innerHTML = 'Jogo do Numero Secreto';
+    paragrafo.innerHTML = 'Escolha um Numero de 1 a 10';
+    responsiveVoice.speak(titulo.innerHTML, 'Brazilian Portuguese Female', {rate:1.2});
+}
+function RandomNumber(){
+    numeroEscolhido = parseInt(Math.random() * 10 + 1);
+    let quantidadeElementosLista = listaSorteados.length;
+    if(quantidadeElementosLista == 10){
+        listaSorteados = [];
+    }
+
+    if(listaSorteados.includes(numeroEscolhido)){
+        return RandomNumber();
+    }else{
+        listaSorteados.push(numeroEscolhido);
+        return numeroEscolhido;
+    }
+}
+
+function verificarChute(){
+    let chute = document.querySelector('.container__input').value;
+
+    if(chute==numero){
+        let nTentativas = tentativas==1 ? 'tentativa': 'tentativas';
+        titulo.innerHTML = "Acertou!";
+        paragrafo.innerHTML = `Você descobriu o número secreto com ${tentativas} ${nTentativas}!`;
+        document.getElementById('reiniciar').removeAttribute('disabled');
+    }else{
+        titulo.innerHTML = "Errou!";
+        if(chute > numero){
+            paragrafo.innerHTML = `O número é menor que ${chute}`;
+        }else{
+            paragrafo.innerHTML = `O número é maior que ${chute}`;
+        }
+        tentativas++;
+    }
+    limparCampo();
+}
+
+function limparCampo() {
+    chute = document.querySelector('input');
+    chute.value = '';
+}
+function novoJogo(){
+    exibirNaTela();
+    limparCampo();
+    numero = RandomNumber();
+    tentativas = 1;
+    document.getElementById('reiniciar').setAttribute('disabled', true);
+    
+}
+
+
